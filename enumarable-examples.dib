@@ -1,0 +1,124 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!markdown
+
+# Enumerable
+
+Hva skjer egentlig når vi bruker `foreach`?
+
+```C#
+foreach(var n in [1,1,2,3,5,8,13,21]){
+    Console.WriteLine(n);
+}
+```
+
+#!markdown
+
+## Iterator pattern
+
+![Iterator pattern][iterator_image]
+
+[iterator_image]: ./img/iterator.png
+
+#!csharp
+
+using System.Collections;
+using System.Collections.Generic;
+
+public class Fibonacci : IEnumerable<int>, IEnumerator<int>
+{
+    private int number0;
+    private int number1;
+    public IEnumerator<int> GetEnumerator() => this;
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public bool MoveNext()
+    {
+        number0 = number1;
+        number1 = Current;
+        Current = number0 + number1;
+        if (Current == 0) Current = 1;
+        return true;
+    }
+
+    public void Reset() => number0 = number1 = 0;
+
+    public int Current { get; private set; }
+
+    object IEnumerator.Current => Current;
+
+    public void Dispose() => Console.WriteLine(("Takk for meg!"));
+}
+
+#!markdown
+
+## `foreach`
+
+[Dokumentasjon](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements#the-foreach-statement)
+
+#!csharp
+
+var max = 10;
+foreach (var number in new Fibonacci().Take(10))
+{
+    Console.WriteLine(number);
+    if(max -- == 0) break;
+}
+
+#!markdown
+
+## Lambda
+
+#!csharp
+
+return new Fibonacci().Skip(10).Take(200);
+
+#!markdown
+
+# Yield
+
+[Sharplab](https://sharplab.io/#gist:ad02dfae882e4758858819688e03cc46)
+
+#!csharp
+
+public IEnumerable<int> Fibonacci(Range range)
+{
+    int number0 = 0;
+    int number1 = 1;
+    while(true)
+    {
+        var number2 = number0 + number1;
+        if(number2 > range.End.Value) yield break;
+        if(number2 >= range.Start.Value) yield return number2;
+        number0 = number1;
+        number1 = number2;
+    }
+}
+
+#!csharp
+
+return Fibonacci(10..100);
+
+#!markdown
+
+## Async enumerable
+
+Det gjør oss i stand til å bruke `yield` i en asynkron kontekst.
+
+```C#
+public IAsyncEnumerable<string> GetAsyncData()
+{
+    yield return "Hello";
+    await Task.Delay(1000);
+    yield return "World";
+}
+```
+
+```C#
+await foreach(var text in GetAsyncData())
+{
+    Console.Writeline(text);
+}
+```

@@ -1,0 +1,15 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=419b3c37_002D10cf_002D4e95_002Daf55_002De19d496ea309/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Or&gt;
+    &lt;And&gt;
+      &lt;TestAncestor&gt;
+        &lt;TestId&gt;Testing Platform::9D1AFB50-10ED-4C97-AC5A-C44BEE68AC97::net9.0::EnumerableExamples.Tests.QuoteCollectionTests.GetQuotes:0&lt;/TestId&gt;
+      &lt;/TestAncestor&gt;
+      &lt;Category&gt;&amp;lt;Uncategorized&amp;gt;&lt;/Category&gt;
+    &lt;/And&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;Testing Platform::9D1AFB50-10ED-4C97-AC5A-C44BEE68AC97::net9.0::EnumerableExamples.Tests.AsyncYieldTests.ListRepos:0&lt;/TestId&gt;
+      &lt;TestId&gt;Testing Platform::9D1AFB50-10ED-4C97-AC5A-C44BEE68AC97::net9.0::EnumerableExamples.Tests.AsyncYieldTests.ListFiles:0&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+  &lt;/Or&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
