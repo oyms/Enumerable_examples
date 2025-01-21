@@ -13,6 +13,9 @@ foreach(var n in [1,1,2,3,5,8,13,21]){
     Console.WriteLine(n);
 }
 ```
+![Skaar forteller](./img/forteller.png)
+
+[Sharplab](https://sharplab.io/#gist:d5ecabf69284df5cc16e3e99c8fb2aa6)
 
 #!markdown
 
@@ -22,34 +25,95 @@ foreach(var n in [1,1,2,3,5,8,13,21]){
 
 [iterator_image]: ./img/iterator.png
 
+#!markdown
+
+### Typer i dotnet 
+
+```mermaid
+---
+title: Non-generic
+---
+classDiagram
+    class IEnumerable{
+        <<interface>>
+        GetEnumerator()* IEnumerator
+    }
+    class IEnumerator{
+        <<interface>>
+        Current object
+        MoveNext()* bool
+        Reset()*
+    }
+    IEnumerable --> IEnumerator : GetEnumerator()
+
+```
+
+```mermaid
+---
+title: Generic
+---
+classDiagram
+    class IEnumerable{
+        <<interface>>
+        GetEnumerator()* IEnumerator
+    }
+    class IEnumerator{
+        <<interface>>
+        Current object
+        MoveNext()* bool
+        Reset()*
+    }
+    IEnumerable --> IEnumerator : GetEnumerator()
+
+    class ΙEnumerable~T~{
+        <<interface>>
+        GetEnumerator()* ΙEnumerator~T~
+    }
+    class ΙEnumerator~T~{
+        <<interface>>
+        Current T
+    }
+    IEnumerable <|-- ΙEnumerable~T~
+    IEnumerator <|-- ΙEnumerator~T~
+    ΙEnumerable~T~ --> ΙEnumerator~T~ : GetEnuerator()
+```
+
+#!markdown
+
+Den viktigste typen er `IEnumerable<T>`. Dette er «grunnmuren» i Linq. Om du lager noe som implementerer denne, kan alle extensionmetodene i `System.Linq` brukes.
+
+#!markdown
+
+For å brukes i `foreach` trenger man egentlig ikke å implementere interfacet. Det holder at metoden `GetEnumerator` er tilgjengelig. Det kan til og med være en extension-metode. [Eksempel](EnumerableExamples/Tests/FactorIteratorTests.cs)
+
 #!csharp
 
 using System.Collections;
 using System.Collections.Generic;
 
-public class Fibonacci : IEnumerable<int>, IEnumerator<int>
+public class Fibonacci : IEnumerable<int>
 {
-    private int number0;
-    private int number1;
-    public IEnumerator<int> GetEnumerator() => this;
+    public IEnumerator<int> GetEnumerator() => new Enumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public bool MoveNext()
+    private class Enumerator: IEnumerator<int>
     {
-        number0 = number1;
-        number1 = Current;
-        Current = number0 + number1;
-        if (Current == 0) Current = 1;
-        return true;
+        private int number0;
+        private int number1;
+        public bool MoveNext()
+        {
+            number0 = number1;
+            number1 = Current;
+            Current = number0 + number1;
+            if (Current == 0) Current = 1;
+            return true;
+        }
+        public void Reset() => number0 = number1 = 0;
+        public int Current { get; private set; }
+        object IEnumerator.Current => Current;
+
+        public void Dispose() => Console.WriteLine(("Takk for meg!"));
     }
-
-    public void Reset() => number0 = number1 = 0;
-
-    public int Current { get; private set; }
-
-    object IEnumerator.Current => Current;
-
-    public void Dispose() => Console.WriteLine(("Takk for meg!"));
 }
 
 #!markdown
@@ -78,6 +142,8 @@ return new Fibonacci().Skip(10).Take(200);
 #!markdown
 
 # Yield
+
+[Dokumentasjon](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)
 
 [Sharplab](https://sharplab.io/#gist:ad02dfae882e4758858819688e03cc46)
 
@@ -122,3 +188,48 @@ await foreach(var text in GetAsyncData())
     Console.Writeline(text);
 }
 ```
+
+#!markdown
+
+## Noen nyttige typer og metoder
+
+- `System.Linq.Enumerable`
+  - `Range`
+  - `Empty`
+  - `Append`
+  - `Prepend`
+- `IEnumerable`
+- `ICollection`
+- `IReadonlyCollection`
+- `List`
+- `Dictionary`
+- `HashSet`
+- `Stack`
+- `Queue`
+- `Array`
+
+#!markdown
+
+## Oppgaver
+
+### Kortstokk
+
+Lag en metode eller klasse som representerer en kortstokk.
+
+`[2,3,4,5,6,7,8,9,10,J,Q,K,A] ⨯ [♠,♥,♦,♣] + [🃏︎,🃟]`
+
+- De 52 kortene skal kunne enumereres. 
+- Jokere er valgfritt. 
+- Hvordan ville du stokket dem?
+- Hvordan ville du sortert dem igjen?
+
+### Zip
+
+Implementer en metode som tar to ulike enumerables og returnerer en enumerable med kombinasjonen av de to (f.eks som en Tuple). Om den ene av de to går tom, skal serien fortsette med de resterende elementene fra den andre rekken.
+```pseudo
+[1,2,3] + ["A","B"] = [(1,"A"),(2,"B"),(3,)]
+```
+
+### Andre metoder
+
+Implementer andre extension-metoder fra `System.Linq.Enumerable` som f.eks `Where` og `Select`.
