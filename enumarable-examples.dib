@@ -210,6 +210,19 @@ await foreach(var text in GetAsyncData())
 
 #!markdown
 
+## `Append` `Prepend`
+
+[Eksempel](https://sharplab.io/#gist:9d9dbabffc5df56a5573588f012f54bb)
+[Kilde](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Linq/src/System/Linq/AppendPrepend.cs)
+
+#!csharp
+
+IEnumerable<string> detailedMessage = [];
+var x = detailedMessage.Append("første element"); //
+var y = x.Prepend("før første element");
+
+#!markdown
+
 ## Oppgaver
 
 ### Kortstokk
