@@ -30,9 +30,11 @@ public class Watcher: IAsyncEnumerable<FileSystemEvent>, IDisposable
     {
         if (_watcher is null) Init();
         
-        while (await _channel.Reader.WaitToReadAsync(cancellationToken))
+        while (await _channel.Reader.WaitToReadAsync(CancellationToken.None))
         {
-            yield return await _channel.Reader.ReadAsync(cancellationToken);
+            if (cancellationToken.IsCancellationRequested) yield break;
+
+            yield return await _channel.Reader.ReadAsync(CancellationToken.None);
         }
     }
 

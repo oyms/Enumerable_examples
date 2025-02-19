@@ -6,18 +6,12 @@ _ = Task.Run(() =>
 {
     Console.ReadKey(true);
     cts.Cancel();
+    Console.WriteLine("Bye! 👋");
 });
 
 
 using var watcher = new Watcher();
-try
+await foreach (var fileEvent in watcher.WithCancellation(cts.Token))
 {
-    await foreach (var fileEvent in watcher.WithCancellation(cts.Token))
-    {
-        Console.WriteLine(fileEvent.Text);
-    }
-}
-catch (OperationCanceledException)
-{
-    Console.WriteLine("Bye! 👋");
+    Console.WriteLine(fileEvent.Text);
 }
