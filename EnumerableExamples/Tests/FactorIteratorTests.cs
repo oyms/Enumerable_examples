@@ -1,5 +1,4 @@
 using EnumerableExamples.Imp.FactorFinder;
-using System.Linq;
 
 namespace EnumerableExamples.Tests;
 
